@@ -2,18 +2,24 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useWeb3 } from '@/composables/useWeb3';
+import { useModal } from '@/composables/useModal';
+import { useAccount } from '@/composables/useAccount';
 import { discuss } from '@/helpers/molotov';
-import { account } from '@/helpers/account';
 
 const router = useRouter();
-const { web3 } = useWeb3();
+const { web3Account } = useWeb3();
+const { modalAccountOpen } = useModal();
+const { getAlias } = useAccount();
 
 const input = ref('');
 const body = ref('');
 
 async function handleDiscuss() {
-  const receipt = await discuss(account, account.address, {
-    from: web3.value.account,
+  if (!input.value) return;
+  if (!web3Account.value) return (modalAccountOpen.value = true);
+  const alias = await getAlias();
+  const receipt = await discuss(alias, alias.address, {
+    from: web3Account.value,
     title: input.value,
     body: body.value,
     created: Math.round(Date.now() / 1e3)
@@ -29,7 +35,6 @@ async function handleDiscuss() {
         v-model="input"
         :definition="{
           type: 'string',
-          title: 'Discuss',
           examples: ['Start a discussion']
         }"
         class="text-lg font-normal"

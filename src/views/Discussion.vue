@@ -3,19 +3,21 @@ import { computed, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useWeb3 } from '@/composables/useWeb3';
 import { shortenAddress, _rt, _n } from '@/helpers/utils';
-import { account } from '@/helpers/account';
 import { propose, vote } from '@/helpers/molotov';
 import { client } from '@/helpers/client';
 import { useAccount } from '@/composables/useAccount';
+import { useModal } from '@/composables/useModal';
 
 const route = useRoute();
-const { web3 } = useWeb3();
-const { voted } = useAccount();
+const { web3Account } = useWeb3();
+const { voted, getAlias } = useAccount();
+const { modalAccountOpen } = useModal();
 
 const id = route.params.id;
 
 const tab = ref('results');
 const loaded = ref(false);
+const loading = ref(false);
 const discussion = ref({});
 const proposals = ref([]);
 const voters = ref([]);
@@ -43,25 +45,30 @@ onMounted(async () => {
 });
 
 async function handleVote(proposal, choice) {
-  const message = {
-    from: web3.value.account,
+  if (!web3Account.value) return (modalAccountOpen.value = true);
+  loading.value = true;
+  const alias = await getAlias();
+  const receipt = await vote(alias, alias.address, {
+    from: web3Account.value,
     discussion: id,
     proposal,
     choice,
     created: Math.round(Date.now() / 1e3)
-  };
-  const receipt = await vote(account, account.address, message);
+  });
   if (!voted.value[id]) voted.value[id] = [];
   voted.value[id].push(proposal);
   console.log('Receipt', receipt);
+  loading.value = false;
   proposals.value = await client.requestAsync('get_proposals', id);
   voters.value = await client.requestAsync('get_voters', id);
 }
 
 async function handlePropose() {
   if (!input.value) return;
-  const receipt = await propose(account, account.address, {
-    from: web3.value.account,
+  if (!web3Account.value) return (modalAccountOpen.value = true);
+  const alias = await getAlias();
+  const receipt = await propose(alias, alias.address, {
+    from: web3Account.value,
     discussion: id,
     body: input.value,
     created: Math.round(Date.now() / 1e3)
@@ -93,7 +100,6 @@ async function handlePropose() {
             v-model="input"
             :definition="{
               type: 'string',
-              title: 'Propose',
               examples: ['Add a statement']
             }"
             class="text-lg font-normal"
@@ -108,6 +114,17 @@ async function handlePropose() {
       </form>
 
       <div v-if="pending[0]">
+        <div class="space-x-1 mb-3">
+          <span
+            class="!w-[28px] !h-[28px] bg-skin-link text-skin-bg inline-block rounded-full text-center"
+          >
+            <b>{{ _n(pending.length) }}</b>
+          </span>
+          <span class="text-md">pending statement(s)</span>
+          <div v-if="loading" class="float-right">
+            <UiLoading />
+          </div>
+        </div>
         <div class="x-block p-4">
           <p v-text="pending[0].body" class="mb-2 text-skin-link" />
           <div class="space-x-2 mb-3">
@@ -150,9 +167,6 @@ async function handlePropose() {
             class="rounded-b-xl h-[6px] border-b border-x mx-[16px]"
           />
         </div>
-        <div v-if="pending">
-          <b>{{ _n(pending.length) }}</b> statement left
-        </div>
       </div>
 
       <div class="pt-4">
@@ -175,33 +189,11 @@ async function handlePropose() {
       </div>
       <div v-if="tab === 'results'" class="space-y-3">
         <div v-if="proposals.length === 0">There isn't any statement yet.</div>
-        <div v-for="(proposal, i) in proposals" :key="i" class="x-block p-4">
-          <p v-text="proposal.body" class="mb-2 text-skin-link" />
-          <div class="mb-3">
-            <div class="rounded-full h-[6px] overflow-hidden bg-skin-border">
-              <div
-                v-for="(score, i2) in Array(3)"
-                :key="i2"
-                class="choice-bg float-left h-full"
-                :style="{
-                  width: `${(
-                    (100 / proposal.scores_total) *
-                    proposal[`scores_${i2 + 1}`]
-                  ).toFixed(3)}%`
-                }"
-                :class="`_${i2 + 1}`"
-              />
-            </div>
-          </div>
-          <div>
-            <Stamp :id="proposal.author" :size="28" class="mr-1" />
-            {{ shortenAddress(proposal.author) }}
-            <span v-text="`· ${_rt(proposal.created)}`" />
-            <div class="float-right">
-              <IH-users class="inline-block mr-1" /> {{ _n(proposal.votes) }}
-            </div>
-          </div>
-        </div>
+        <Proposal
+          v-for="(proposal, i) in proposals"
+          :proposal="proposal"
+          :key="i"
+        />
       </div>
       <div v-if="tab === 'voters'">
         <div>

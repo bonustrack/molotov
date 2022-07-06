@@ -60,7 +60,6 @@ export function useWeb3() {
         });
         // auth.provider.on('disconnect', async () => {});
       }
-      console.log('Provider', auth.provider.value);
       let network, accounts;
       try {
         if (connector === 'gnosis') {
