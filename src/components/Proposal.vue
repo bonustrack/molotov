@@ -36,6 +36,7 @@ const choices = computed(() =>
           Abstain {{ _n(choices[0].percent.toFixed(2)) }}%
         </span>
       </div>
+      <div v-else class="mb-2">There isn't any vote yet</div>
       <div class="rounded-full h-[6px] overflow-hidden bg-skin-border">
         <div
           v-for="(choice, i2) in choices"

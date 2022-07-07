@@ -30,7 +30,8 @@ async function handleLogin(connector) {
             class="flex items-center"
             style="font-size: 24px"
           >
-            molotov
+            <IH-puzzle class="w-5 h-5 inline-block mr-2" />
+            blob
           </router-link>
         </div>
         <div :key="web3.account">

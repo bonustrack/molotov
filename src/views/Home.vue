@@ -16,8 +16,8 @@ onMounted(async () => {
   <div>
     <div class="py-8 mb-6 border-b hero">
       <Container class="max-w-screen-md">
-        <div v-text="'Molotov'" class="eyebrow mb-3" />
-        <h1 class="mb-5 mono">Ideation<br />for communities.</h1>
+        <div v-text="'blob'" class="eyebrow mb-3" />
+        <h1 class="mb-5 mono">Ideation for DAOS<br /></h1>
       </Container>
     </div>
     <Container class="max-w-screen-md">

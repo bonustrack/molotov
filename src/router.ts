@@ -1,9 +1,11 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
 import Home from '@/views/Home.vue';
+import Start from '@/views/Start.vue';
 import Discussion from '@/views/Discussion.vue';
 
 const routes: any[] = [
   { path: '/', name: 'home', component: Home },
+  { path: '/start', name: 'start', component: Start },
   { path: '/discussion/:id', name: 'discussion', component: Discussion }
 ];
 

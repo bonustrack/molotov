@@ -114,7 +114,7 @@ async function handlePropose() {
       </form>
 
       <div v-if="pending[0]">
-        <div class="space-x-1 mb-3">
+        <div class="space-x-2 mb-3">
           <span
             class="!w-[28px] !h-[28px] bg-skin-link text-skin-bg inline-block rounded-full text-center"
           >
