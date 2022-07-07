@@ -4,3 +4,5 @@ import { promisifyAll } from 'bluebird';
 promisifyAll(kbyte.Client.prototype);
 
 export const client = new kbyte.Client(import.meta.env.VITE_API_URL);
+
+setInterval(() => client.request('heartbeat', null), 10e3);
