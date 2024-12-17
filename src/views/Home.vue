@@ -15,12 +15,12 @@ onMounted(async () => {
 <template>
   <div>
     <div class="py-8 mb-6 border-b hero">
-      <Container class="max-w-screen-md">
-        <div v-text="'blob'" class="eyebrow mb-3" />
+      <Container>
+        <div v-text="'Pulse'" class="eyebrow mb-3" />
         <h1 class="mb-5 mono">Ideation for DAOS<br /></h1>
       </Container>
     </div>
-    <Container class="max-w-screen-md">
+    <Container>
       <Discuss class="mb-4" />
       <h3 v-text="'Last discussions'" class="mb-2" />
       <UiLoading v-if="!loaded" class="block mb-2" />
