@@ -51,7 +51,7 @@ async function handleDiscuss() {
         <IH-paper-airplane class="inline-block rotate-90" />
       </UiButton>
     </div>
-    <Container class="max-w-screen-md pt-5">
+    <Container class="pt-5">
       <div class="s-box mb-4">
         <SIString
           v-model="title"
