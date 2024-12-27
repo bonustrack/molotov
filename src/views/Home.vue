@@ -14,10 +14,12 @@ onMounted(async () => {
 
 <template>
   <div>
-    <div class="py-8 mb-6 border-b hero">
+    <div class="py-8 mb-6 border-b hero bg-purple-700">
       <Container>
-        <div v-text="'Pulse'" class="eyebrow mb-3" />
-        <h1 class="mb-5 mono">Ideation for DAOS<br /></h1>
+        <h1 class="my-5 mono text-white">
+          Think together,<br />
+          Spark change.
+        </h1>
       </Container>
     </div>
     <Container>

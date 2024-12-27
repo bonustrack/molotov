@@ -39,14 +39,21 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'Salin';
+  src: url('./assets/fonts/Salin-Black.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+}
+
 body {
   background-color: var(--bg-color);
 }
 
 .mono {
-  font-size: 44px;
-  font-family: 'Space Mono', monospace;
-  letter-spacing: -1px;
+  font-size: 64px;
+  font-family: 'Salin', monospace;
+  text-transform: uppercase;
   font-weight: 700;
   line-height: 1.1em;
 }
